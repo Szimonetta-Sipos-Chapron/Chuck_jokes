@@ -1,26 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Button from '../Button/Button';
 import './Widget.scss';
-import axios from 'axios';
+import { changeJoke } from '../store/actions/jokeAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Widget() {
-  const [joke, setJoke] = useState(null);
+  const joke = useSelector((state) => state.joke.value)
 
-  const fetchJoke = async () => {
-    console.log('CLICK');
-    try {
-      const res = await axios.get('https://api.chucknorris.io/jokes/random');
-      console.log(res);
-      setJoke(res.data.value);
-    } catch (error) {
-      console.log(error);
-      alert('Une erreur est survenue...');
-    }
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setTimeout(() => {
-      fetchJoke();
+      dispatch(changeJoke());
     }, 2000);
   }, []);
 
@@ -28,8 +19,8 @@ function Widget() {
     <article className="widget">
       {!joke ? <div>Loading...</div> : <p className="widget-content">{joke}</p>}
       <Button
-        handleClick={fetchJoke}
-        text={'Click for a joke'}
+        handleClick={() => dispatch(changeJoke())}
+        text={'New joke'}
         backgroundColor="lightgray"
       />
     </article>
